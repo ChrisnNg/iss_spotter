@@ -39,7 +39,25 @@ const fetchCoordsByIP = function (ip, callback) {
 };
 
 
+const fetchISSFlyOverTimes = function(coords, callback) {
+  const url = `http://api.open-notify.org/iss-pass.json?lat=${coords["latitude"]}&lon=${coords['longitude']}`;
+ 
+  request(url, (error, response, body) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    if (response.statusCode !== 200) {
+      callback(Error(`Failure due to statusCode ${response.statusCode} while trying to fetch ISS pass times: ${body}`), null);
+      return;
+    }
+  
+    callback(null, JSON.parse(body)['response']);
+  });
+};
+
 module.exports = {
   fetchMyIP,
-  fetchCoordsByIP
+  fetchCoordsByIP,
+  fetchISSFlyOverTimes
 };
